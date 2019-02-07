@@ -10,9 +10,9 @@ Cookiecutter for scaffolding a fresh purecsript frontend including
 
 ### Requirements
 
-* [Cookiecutter] (https://github.com/audreyr/cookiecutter)
-* [Purescript] (https://github.com/purescript/purescript)
-* [Spago] (https://github.com/spacchetti/spago)
+* [Cookiecutter](https://github.com/audreyr/cookiecutter)
+* [Purescript](https://github.com/purescript/purescript)
+* [Spago](https://github.com/spacchetti/spago)
 * npm or yarn
 
 ### Usage
