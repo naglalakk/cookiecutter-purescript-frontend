@@ -3,18 +3,17 @@ cookiecutter-purescript-frontend
 
 Cookiecutter for scaffolding a fresh purecsript frontend including
 
-    * Package management using [Spago](https://github.com/spacchetti/spago)
-    * [purescript-express](https://github.com/nkly/purescript-express) running a node server
-    * A simple ready-to-use
-      [Halogen](https://github.com/slamdata/purescript-halogen) component
-    * Makefile for common tasks
+* Package management using [Spago](https://github.com/spacchetti/spago)
+* [purescript-express](https://github.com/nkly/purescript-express) running a node server
+* A simple ready-to-use [Halogen](https://github.com/slamdata/purescript-halogen) component
+* Makefile for common tasks
 
 ### Requirements
 
-    * [Cookiecutter] (https://github.com/audreyr/cookiecutter)
-    * [Purescript] (https://github.com/purescript/purescript)
-    * [Spago] (https://github.com/spacchetti/spago)
-    * npm or yarn
+* [Cookiecutter] (https://github.com/audreyr/cookiecutter)
+* [Purescript] (https://github.com/purescript/purescript)
+* [Spago] (https://github.com/spacchetti/spago)
+* npm or yarn
 
 ### Usage
 
@@ -28,13 +27,13 @@ This will install dependencies for Purescript with Spago and then install the js
 
 This project includes a Makefile with a few common tasks:
 
-    * build   - Builds code from src
-    * bundle  - Bundle code from src to commonjs format
-    * clean   - Clean up generated output (e.g. docs)
-    * docs    - Generate docs from ./spago and ./src folders
-    * install - Install all dependencies
-    * server  - Starts development server on port 8080
-    * test    - Runs tests for Purescript code
+* build   - Builds code from src
+* bundle  - Bundle code from src to commonjs format
+* clean   - Clean up generated output (e.g. docs)
+* docs    - Generate docs from ./spago and ./src folders
+* install - Install all dependencies
+* server  - Starts development server on port 8080
+* test    - Runs tests for Purescript code
 
 The default package manager set for this project is yarn.
 You can change this by editing the PCK_MANAGER variable in the Makefile
@@ -50,6 +49,6 @@ Now you should be able to navigate to localhost:8080 in your browser and see a b
 
 ### Structure
 
-    * Purescript code              -> ./src
-    * Static files (html/pug, css) -> ./static
-    * Purescript tests             -> ./test
+* Purescript code              -> ./src
+* Static files (html/pug, css) -> ./static
+* Purescript tests             -> ./test
