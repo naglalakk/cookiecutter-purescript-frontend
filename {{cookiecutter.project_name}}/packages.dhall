@@ -127,6 +127,26 @@ let additions =
       ]
       "https://github.com/nkly/purescript-express"
       "master"
+  , halogen-formless = 
+      mkPackage 
+      [ "halogen-renderless"
+      , "variant"
+      , "heterogeneous"
+      , "generics-rep"
+      ]
+      "https://github.com/thomashoneyman/purescript-halogen-formless.git"
+      "master"
+  , routing-duplex = 
+      mkPackage
+      [ "typelevel-prelude"
+      , "arrays"
+      , "globals"
+      , "strings"
+      , "lazy"
+      , "profunctor"
+      ]
+      "https://github.com/natefaubion/purescript-routing-duplex"
+      "master"
   }
 
 in  upstream ⫽ overrides ⫽ additions
