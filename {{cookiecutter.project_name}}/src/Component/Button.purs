@@ -7,48 +7,32 @@ import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 
-type State = Boolean
+type State = { enabled :: Boolean }
+data Action = Toggle
 
-data Query a
-  = Toggle a
-  | IsOn (Boolean -> a)
-
-type Input = Unit
-
-data Message = Toggled Boolean
-
-component :: forall m. H.Component HH.HTML Query Input Message m
+component :: forall q i o m. H.Component HH.HTML q i o m
 component =
-  H.component
-    { initialState: const initialState
+  H.mkComponent
+    { initialState
     , render
-    , eval
-    , receiver: const Nothing
+    , eval: H.mkEval $ H.defaultEval { handleAction = handleAction }
     }
-  where
 
-  initialState :: State
-  initialState = false
+initialState :: forall i. i -> State
+initialState _ = { enabled: false }
 
-  render :: State -> H.ComponentHTML Query
-  render state =
-    let
-      label = if state then "On" else "Off"
-    in
-      HH.button
-        [ HP.title label
-        , HE.onClick (HE.input_ Toggle)
-        ]
-        [ HH.text label ]
+render :: forall m. State -> H.ComponentHTML Action () m
+render state =
+  let
+    label = if state.enabled then "On" else "Off"
+  in
+    HH.button
+      [ HP.title label
+      , HE.onClick \_ -> Just Toggle
+      ]
+      [ HH.text label ]
 
-  eval :: Query ~> H.ComponentDSL State Query Message m
-  eval = case _ of
-    Toggle next -> do
-      state <- H.get
-      let nextState = not state
-      H.put nextState
-      H.raise $ Toggled nextState
-      pure next
-    IsOn reply -> do
-      state <- H.get
-      pure (reply state)
+handleAction ∷ forall o m. Action -> H.HalogenM State Action () o m Unit
+handleAction = case _ of
+  Toggle ->
+    H.modify_ \st -> st { enabled = not st.enabled }

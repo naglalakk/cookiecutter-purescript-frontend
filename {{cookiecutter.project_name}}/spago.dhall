@@ -3,7 +3,7 @@ Welcome to a Spago project!
 You can edit this file as you like.
 -}
 { name =
-    "competitionfeed-newsletter-component"
+    "{{ cookiecutter.project_name }}"
 , dependencies =
     [ "effect"
     , "console" 

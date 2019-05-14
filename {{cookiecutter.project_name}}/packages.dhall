@@ -114,7 +114,16 @@ let mkPackage =
 let upstream =
       https://raw.githubusercontent.com/spacchetti/spacchetti/20181209/src/packages.dhall sha256:c63285af67ae74feb2f6eb67521712441928d2726ea10e2040774849ca765027
 
-let overrides = {=}
+let overrides =
+  { halogen =
+      upstream.halogen ⫽ { version = "v5.0.0-rc.4" }
+  , halogen-vdom =
+      upstream.halogen-vdom ⫽ { version = "v6.1.0" }
+  , dom-indexed = 
+      upstream.dom-indexed ⫽ { version = "v7.0.0" }
+  , halogen-select = 
+      upstream.halogen-select ⫽ { version = "v5.0.0-rc.2" }
+  }
 
 let additions = 
   { express  = 
@@ -135,7 +144,7 @@ let additions =
       , "generics-rep"
       ]
       "https://github.com/thomashoneyman/purescript-halogen-formless.git"
-      "master"
+      "halogen-5"
   , routing-duplex = 
       mkPackage
       [ "typelevel-prelude"
