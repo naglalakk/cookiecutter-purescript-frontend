@@ -73,7 +73,7 @@ Now you should be able to navigate to localhost:8080 in your browser and see a b
 
 Environment variables can be included in a .env file .e.g
 
-    echo "PORTNR=8081 > .env"
+    echo "PORTNR=8081" > .env
 
 **PORTNR**
 
