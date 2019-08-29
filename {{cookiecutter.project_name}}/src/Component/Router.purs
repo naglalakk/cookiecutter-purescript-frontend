@@ -2,52 +2,65 @@ module Component.Router where
 
 import Prelude
 
-import Data.Either.Nested               (Either1)
-import Data.Functor.Coproduct.Nested    (Coproduct1)
+import Data.Either                      (hush)
 import Data.Maybe                       (fromMaybe, Maybe(..))
+import Data.Symbol                      (SProxy(..))
 import Effect.Aff.Class                 (class MonadAff)
+import Halogen                          (liftEffect)
 import Halogen                          as H
-import Halogen.Component.ChildPath      as CP
 import Halogen.HTML                     as HH
+import Routing.Duplex                   as RD
+import Routing.Hash                     (getHash)
 
+import Capability.Navigate              (class Navigate, navigate)
+import Component.Utils                  (OpaqueSlot)
 import Page.Home                        as Home
-import Data.Route                       (Route(..))
+import Data.Route                       (Route(..), routeCodec)
 
 type State = 
-  { route :: Route }
+  { route :: Maybe Route }
 
 data Query a
   = Navigate Route a 
 
-type Input = 
-  Maybe Route
+data Action 
+  = Initialize
 
-type ChildQuery = Coproduct1
-  Home.Query
-
-type ChildSlot = Either1
-  Unit
+type ChildSlots = 
+  ( home :: OpaqueSlot Unit )
 
 component
   :: forall m 
    . MonadAff m
-  => H.Component HH.HTML Query Input Void m 
-component = 
-  H.parentComponent
-  { initialState: \initialRoute -> { route: fromMaybe Home initialRoute }
+  => Navigate m
+  => H.Component HH.HTML Query Unit Void m 
+component = H.mkComponent 
+  { initialState: \_ -> { route: Nothing }
   , render
-  , eval
-  , receiver: const Nothing
+  , eval: H.mkEval $ H.defaultEval
+      { handleQuery = handleQuery
+      , handleAction = handleAction
+      , initialize = Just Initialize
+      }
   }
   where
-    eval :: Query ~> H.ParentDSL State Query ChildQuery ChildSlot Void m
-    eval (Navigate dest a) = do
-      { route } <- H.get
-      when (route /= dest) do
-         H.modify_ _ { route = dest }
-      pure a
+  handleAction :: Action -> H.HalogenM State Action ChildSlots Void m Unit
+  handleAction = case _ of
+    Initialize -> do
+      initialRoute <- hush <<< (RD.parse routeCodec) <$> liftEffect getHash
+      navigate $ fromMaybe Home initialRoute
 
-    render :: State -> H.ParentHTML Query ChildQuery ChildSlot m 
-    render { route } = case route of
-      Home -> 
-        HH.slot' CP.cp1 unit Home.component unit absurd
+  handleQuery :: forall a. Query a -> H.HalogenM State Action ChildSlots Void m (Maybe a)
+  handleQuery = case _ of
+    Navigate dest a -> do
+      { route } <- H.get
+      when (route /= Just dest) do
+         H.modify_ _ { route = Just dest }
+      pure (Just a)
+  
+  render :: State -> H.ComponentHTML Action ChildSlots m
+  render { route } = case route of
+    Just Home -> 
+      HH.slot (SProxy :: _ "home") unit Home.component unit absurd
+    Nothing ->
+      HH.div_ [ HH.text "Oh no! That page wasn't found." ]

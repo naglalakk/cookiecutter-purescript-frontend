@@ -1,63 +1,35 @@
 module Page.Home where
 
 import Prelude
-import Data.Maybe (Maybe(..), maybe)
-import Halogen as H
-import Halogen.HTML as HH
-import Halogen.HTML.Events as HE
+import Data.Const                   (Const)
+import Data.Maybe                   (Maybe(..))
+import Data.Symbol                  (SProxy(..))
+import Halogen                      as H
+import Halogen.HTML                 as HH
+
 import Component.Button as Button
+import Component.Utils              (OpaqueSlot)
 
-data Query a
-  = HandleButton Button.Message a
-  | CheckButtonState a
+type State = Maybe Int
 
-type State =
-  { toggleCount :: Int
-  , buttonState :: Maybe Boolean
-  }
+data Action = NoAction
 
-data Slot = ButtonSlot
-derive instance eqButtonSlot :: Eq Slot
-derive instance ordButtonSlot :: Ord Slot
+type ChildSlots = 
+  ( button :: OpaqueSlot Unit)
 
-component :: forall m. H.Component HH.HTML Query Unit Void m
+component :: forall m. H.Component HH.HTML (Const Void) Unit Void m
 component =
-  H.parentComponent
-    { initialState: const initialState
+  H.mkComponent
+    { initialState: const Nothing
     , render
-    , eval
-    , receiver: const Nothing
+    , eval: H.mkEval H.defaultEval
     }
   where
 
-  initialState :: State
-  initialState =
-    { toggleCount: 0
-    , buttonState: Nothing }
-
-  render :: State -> H.ParentHTML Query Button.Query Slot m
+  render :: State -> H.ComponentHTML Action ChildSlots m
   render state =
     HH.div_
-      [ HH.slot ButtonSlot Button.component unit (HE.input HandleButton)
-      , HH.p_
-          [ HH.text ("Button has been toggled " <> show state.toggleCount <> " time(s)") ]
-      , HH.p_
-          [ HH.text
-              $ "Last time I checked, the button was: "
-              <> (maybe "(not checked yet)" (if _ then "on" else "off") state.buttonState)
-              <> ". "
-          , HH.button
-              [ HE.onClick (HE.input_ CheckButtonState) ]
-              [ HH.text "Check now" ]
-          ]
+      [ HH.h1_
+        [ HH.text "Button" ]
+      , HH.slot (SProxy :: _ "button") unit Button.component unit absurd
       ]
-
-  eval :: Query ~> H.ParentDSL State Query Button.Query Slot Void m
-  eval = case _ of
-    HandleButton (Button.Toggled _) next -> do
-      H.modify_ (\st -> st { toggleCount = st.toggleCount + 1 })
-      pure next
-    CheckButtonState next -> do
-      buttonState <- H.query ButtonSlot $ H.request Button.IsOn
-      H.modify_ (_ { buttonState = buttonState })
-      pure next
