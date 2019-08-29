@@ -1,7 +1,7 @@
 module Capability.LogMessages where
 
 import Prelude
-import Data.Log                     (Log(..))
+import Data.Log                     (Log)
 import Control.Monad.Trans.Class    (lift)
 import Halogen                      (HalogenM)
 

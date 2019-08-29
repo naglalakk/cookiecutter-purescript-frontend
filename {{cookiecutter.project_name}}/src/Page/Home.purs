@@ -2,11 +2,10 @@ module Page.Home where
 
 import Prelude
 import Data.Const                   (Const)
-import Data.Maybe                   (Maybe(..), maybe)
+import Data.Maybe                   (Maybe(..))
 import Data.Symbol                  (SProxy(..))
 import Halogen                      as H
 import Halogen.HTML                 as HH
-import Halogen.HTML.Events          as HE
 
 import Component.Button as Button
 import Component.Utils              (OpaqueSlot)

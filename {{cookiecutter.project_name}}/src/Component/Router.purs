@@ -53,7 +53,7 @@ component = H.mkComponent
   handleQuery :: forall a. Query a -> H.HalogenM State Action ChildSlots Void m (Maybe a)
   handleQuery = case _ of
     Navigate dest a -> do
-      { route } <- H.get
+      { route } <- H.get
       when (route /= Just dest) do
          H.modify_ _ { route = Just dest }
       pure (Just a)

@@ -2,7 +2,6 @@ module Data.Log where
 
 import Prelude
 import Data.Generic.Rep (class Generic)
-import Data.Generic.Rep.Show (genericShow)
 
 newtype Log = Log
   { message :: String

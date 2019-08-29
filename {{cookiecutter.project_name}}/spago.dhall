@@ -5,17 +5,21 @@ You can edit this file as you like.
 { name =
     "{{ cookiecutter.project_name }}"
 , dependencies =
-    [ "effect"
+    [ "affjax" 
+    , "argonaut" 
+    , "css"
     , "console" 
-    , "halogen" 
-    , "express" 
-    , "halogen-formless" 
-    , "strings" 
     , "datetime" 
+    , "dotenv"
+    , "effect"
+    , "express" 
+    , "halogen" 
+    , "halogen-formless" 
+    , "psci-support"
     , "routing"
     , "routing-duplex" 
-    , "argonaut" 
-    , "affjax" ]
+    , "strings" 
+    ]
 , packages =
     ./packages.dhall
 }
