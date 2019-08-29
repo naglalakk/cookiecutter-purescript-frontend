@@ -5,9 +5,11 @@ cookiecutter-purescript-frontend
 
 Cookiecutter for scaffolding a fresh purecsript frontend including. The structure of the project generated is borrowed directly from tomashoneyman [Real World Halogen](https://github.com/thomashoneyman/purescript-halogen-realworld) which is a really good reference for how to structure a Halogen project. 
 
-**NOTE* 
+*Note*
 
-For Halogen 5 check out the [v5 branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v5)
+This is a cookiecutter for projects using Halogen version 5 with Purescript >= 0.13.
+If you are looking for Halogen-4 check out the [v4 branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v4). Do note that this
+branch is stale and not being maintained anymore.
 
 Including
 
