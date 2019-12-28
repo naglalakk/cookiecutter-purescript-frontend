@@ -11,26 +11,28 @@ import Halogen.VDom.Driver      (runUI)
 import Routing.Duplex           (parse)
 import Routing.Hash             (matchesWith)
 
-import AppM                     (Environment(..)
-                                ,Env, runAppM)
-
-import Api.Request              (BaseURL(..))
+import AppM                     (runAppM)
 import Component.Router         as Router
+import Config                   (environment, apiURL)
+import Data.Environment         (Env, toEnvironment)
 import Data.Route               (routeCodec)
+import Data.URL                 (BaseURL(..))
 
 main :: Effect Unit
 main = HA.runHalogenAff do
   body <- HA.awaitBody
 
   let 
-    baseUrl = BaseURL "http://localhost:8080"
-    logLevel = Development
-  
-    environment :: Env
-    environment = { logLevel, baseUrl }
+    environ = toEnvironment environment
+    url     = BaseURL apiURL
+
+    env :: Env
+    env = { environment: environ
+          , apiURL: url
+          }
 
     rootComponent :: H.Component HH.HTML Router.Query Unit Void Aff
-    rootComponent = H.hoist (runAppM environment) Router.component
+    rootComponent = H.hoist (runAppM env) Router.component
 
   halogenIO <- runUI rootComponent unit body
 

@@ -160,6 +160,28 @@ let additions =
       ["control"]
       "https://github.com/thomashoneyman/purescript-halogen-renderless"
       "master"
+  , precise-datetime =
+      mkPackage
+      [ "arrays"
+      , "console"
+      , "datetime"
+      , "either"
+      , "enums"
+      , "foldable-traversable"
+      , "formatters"
+      , "integers"
+      , "js-date"
+      , "lists"
+      , "maybe"
+      , "newtype"
+      , "strings"
+      , "tuples"
+      , "unicode"
+      , "numbers"
+      , "decimals"
+      ]
+      "https://github.com/awakesecurity/purescript-precise-datetime"
+      "master"
   , routing-duplex = 
       mkPackage
       [ "typelevel-prelude"

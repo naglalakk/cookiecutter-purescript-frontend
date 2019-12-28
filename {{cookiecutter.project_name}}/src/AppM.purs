@@ -13,23 +13,12 @@ import Type.Equality                (class TypeEquals, from)
 import Routing.Duplex               (print)
 import Routing.Hash                 (setHash)
 
-import Api.Request                  (BaseURL)
 import Capability.LogMessages       (class LogMessages)
 import Capability.Navigate          (class Navigate)
+import Data.Environment             (Environment(..), Env)
 import Data.Log                     as Log
 import Data.Route                   as Route
-
-data Environment 
-  = Development
-  | Production
-
-derive instance eqEnvironment :: Eq Environment
-derive instance ordEnvironment :: Ord Environment
-
-type Env =
-  { logLevel :: Environment
-  , baseUrl  :: BaseURL
-  }
+import Data.URL                     (BaseURL)
 
 newtype AppM a = AppM (ReaderT Env Aff a)
 
@@ -50,7 +39,7 @@ instance monadAskAppM :: TypeEquals e Env => MonadAsk e AppM where
 instance logMessagesAppM :: LogMessages AppM where
   logMessage log = do 
     env <- ask
-    liftEffect case env.logLevel of
+    liftEffect case env.environment of
       Production -> pure unit
       _ -> Console.log $ Log.message log
 

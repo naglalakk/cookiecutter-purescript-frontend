@@ -13,12 +13,15 @@ You can edit this file as you like.
     , "dotenv"
     , "effect"
     , "express" 
+    , "formatters"
     , "halogen" 
     , "halogen-formless" 
+    , "precise-datetime"
     , "psci-support"
     , "routing"
     , "routing-duplex" 
     , "strings" 
+    , "spec"
     ]
 , packages =
     ./packages.dhall
