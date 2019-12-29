@@ -193,6 +193,13 @@ let additions =
       ]
       "https://github.com/natefaubion/purescript-routing-duplex"
       "master"
+  , timestamp =
+      mkPackage
+      ["argonaut"
+      ,"formatters"
+      ,"precise-datetime"]
+      "https://github.com/naglalakk/purescript-timestamp"
+      "master"
   }
 
 in  upstream ⫽ overrides ⫽ additions
