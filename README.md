@@ -7,7 +7,7 @@ Cookiecutter for scaffolding a fresh purecsript frontend including. The structur
 
 *Note*
 
-This is a cookiecutter for projects using Halogen version 5 with Purescript >= 0.13.
+This is a cookiecutter for projects using Halogen version 5 with Purescript >= 0.13
 If you are looking for Halogen-4 check out the [v4 branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v4). Do note that this
 branch is stale and not being maintained anymore.
 
@@ -39,20 +39,21 @@ Including
 * [Purescript](https://github.com/purescript/purescript)
 * [Spago](https://github.com/spacchetti/spago)
 * npm or yarn
-
-**Optional** (Bundling/Server will not work unless you swap this out)
-
 * [Parcel](https://parceljs.org) 
 
 ### Usage
 
     cookiecutter https://github.com/naglalakk/cookiecutter-purescript-frontend
 
+This will ask you a couple of question like the name of your project, the
+version and if you want to include a user authentication setup (on by
+default).
+
 Once you have generated your project with cookiecutter you can start by running install for all dependencies with
 
     make install
 
-This will install dependencies for Purescript with Spago and then install the js dependencies needed for the server (express and pug )
+This will install dependencies for Purescript with Spago and then install the js dependencies needed for the server ( express and pug )
 
 This project includes a Makefile with a few common tasks:
 
@@ -87,8 +88,17 @@ Environment variables can be included in a .env file .e.g
 
 Sets the port for the server (defaults to 8080)
 
+**API_URL**
+
+The URL of the API service being used with your generated frontend
+
+**API_KEY**
+
+Only applies if user == "y" in your cookiecutter settings. This is a base64
+encoded string of "<username>:<password>"
+
 ### Structure
 
-* Purescript code              -> ./src
-* Static files (html/pug, css) -> ./static
-* Purescript tests             -> ./test
+* Purescript code                  -> ./src
+* Static files (html, css, images) -> ./static
+* Purescript tests                 -> ./test

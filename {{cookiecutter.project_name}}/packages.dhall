@@ -115,13 +115,7 @@ let upstream =
       https://raw.githubusercontent.com/purescript/package-sets/psc-0.13.3-20190818/src/packages.dhall sha256:c95c4a8b8033a48a350106b759179f68a695c7ea2208228c522866fd43814dc8
 
 let overrides =
-  { halogen =
-      upstream.halogen ⫽ { version = "v5.0.0-rc.4" }
-  , halogen-vdom =
-      upstream.halogen-vdom ⫽ { version = "v6.1.0" }
-  , dom-indexed = 
-      upstream.dom-indexed ⫽ { version = "v7.0.0" }
-  , css =
+  { css =
           upstream.css
       //  { repo =
               "https://github.com/slamdata/purescript-css"
@@ -140,26 +134,21 @@ let additions =
       , "aff"
       ]
       "https://github.com/nkly/purescript-express"
-      "master"
+      "b0d3d31703a02a7dddc48fa23669bebe6de85e90"
   , halogen-formless = 
       mkPackage 
-      [ "halogen-renderless"
-      , "variant"
+      [ "variant"
       , "heterogeneous"
       , "generics-rep"
+      , "profunctor-lenses"
       ]
       "https://github.com/thomashoneyman/purescript-halogen-formless.git"
-      "master"
+      "07f877c99420b33dd8813cbf8ab2c30ca40bbb49"
   , halogen-select = 
       mkPackage
       ["halogen", "record"]
       "https://github.com/citizennet/purescript-halogen-select"
       "467b35fa5dd05d64dbdbcab77442153f729bd0a8"
-  , halogen-renderless = 
-      mkPackage
-      ["control"]
-      "https://github.com/thomashoneyman/purescript-halogen-renderless"
-      "master"
   , precise-datetime =
       mkPackage
       [ "arrays"
@@ -181,7 +170,7 @@ let additions =
       , "decimals"
       ]
       "https://github.com/awakesecurity/purescript-precise-datetime"
-      "master"
+      "2355b3471b758e16d17078e09bb79ee26d82b90a"
   , routing-duplex = 
       mkPackage
       [ "typelevel-prelude"
@@ -192,14 +181,14 @@ let additions =
       , "profunctor"
       ]
       "https://github.com/natefaubion/purescript-routing-duplex"
-      "master"
+      "150d92bab24e0f8ad23f84e4a3e24c6c9ebc5ac6"
   , timestamp =
       mkPackage
       ["argonaut"
       ,"formatters"
       ,"precise-datetime"]
       "https://github.com/naglalakk/purescript-timestamp"
-      "master"
+      "c308b43655ba1c100e53a15ce8146916c4b90e63"
   }
 
 in  upstream ⫽ overrides ⫽ additions

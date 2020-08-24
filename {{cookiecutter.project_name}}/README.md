@@ -6,9 +6,6 @@
 * [Purescript](https://github.com/purescript/purescript)
 * [Spago](https://github.com/spacchetti/spago)
 * npm or yarn
-
-**Optional** (Bundling/Server will not work unless you swap this out)
-
 * [Parcel](https://parceljs.org) 
 
 ### Installation
@@ -49,6 +46,13 @@ PORTNR
 
 The port number the server will be running on. The default port is 8080
 
+ 
 API_URL
 
 The API URL for the backend service
+
+{% if cookiecutter.user == "y" %}
+API_KEY
+
+Base64 version of a Basic Auth string ( base64(<username>:<password>) )
+{% endif %}
