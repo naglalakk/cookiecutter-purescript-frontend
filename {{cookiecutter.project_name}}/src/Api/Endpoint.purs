@@ -1,6 +1,6 @@
 module Api.Endpoint where
 
-import Prelude
+import Prelude                          hiding ((/))
 import Data.Generic.Rep                 (class Generic)
 import Data.Generic.Rep.Show            (genericShow)
 import Routing.Duplex                   (RouteDuplex'
@@ -9,7 +9,7 @@ import Routing.Duplex.Generic           (sum, noArgs)
 import Routing.Duplex.Generic.Syntax    ((/))
 
 data Endpoint 
-  = Users
+  = UserLogin
 
 derive instance genericEndpoint :: Generic Endpoint _
 
@@ -18,6 +18,6 @@ instance showEndpoint :: Show Endpoint where
 
 endpointCodec :: RouteDuplex' Endpoint
 endpointCodec = root $ sum
-  { "Users": "users" / noArgs
+  { "UserLogin" : "users" / "authenticate" / noArgs
   }
 

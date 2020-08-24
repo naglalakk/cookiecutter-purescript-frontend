@@ -9,27 +9,33 @@ import Effect.Aff                       (launchAff_)
 import Effect.Class                     (liftEffect)
 import Effect.Console                   (log)
 import Node.Express.App                 (App
-                                        ,use
+                                        ,useAt
                                         ,listenHttp
-                                        ,setProp, get)
-import Node.Express.Response            (render)
+                                        ,get)
+import Node.Express.Response            (sendFile)
 import Node.Express.Middleware.Static   (static)
 import Node.Process                     (lookupEnv)
 
-app :: App
-app = do
-    setProp "views" "static/views"
-    setProp "view engine" "pug"
-    use (static "static")
-    get "/" $ render "index" ""
+import Data.Environment                 (Environment(..)
+                                        ,toEnvironment)
+
+app :: Environment -> App
+app env = do
+    case env of
+      Development -> useAt "/static" (static "static")
+      _ -> pure unit
+    -- route all requests to the same template
+    get "*" $ sendFile "static/views/index.html"
 
 main :: Effect Unit
 main = launchAff_ do
   _ <- Dotenv.loadFile
   liftEffect do
     port <- lookupEnv "PORTNR"
+    env  <- lookupEnv "ENVIRONMENT"
     -- Port defaults to 8080
-    let p = fromMaybe "8080" port
-    listenHttp app (fromMaybe 8080 $ fromString p) \_ ->
+    let 
+      p   = fromMaybe "8080" port
+      envStr = fromMaybe "Development" env
+    listenHttp (app $ toEnvironment envStr) (fromMaybe 8080 $ fromString p) \_ ->
       log $ "Listening on "  <> p
-
