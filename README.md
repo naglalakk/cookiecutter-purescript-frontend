@@ -95,7 +95,7 @@ The URL of the API service being used with your generated frontend
 **API_KEY**
 
 Only applies if user == "y" in your cookiecutter settings. This is a base64
-encoded string of "<username>:<password>"
+encoded string of "username:password"
 
 ### Structure
 
