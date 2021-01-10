@@ -19,7 +19,7 @@ instance showRoute :: Show Route where
   show = genericShow
 
 routeCodec :: RouteDuplex' Route
-routeCodec = root $ sum
+routeCodec = sum
   { "Home": noArgs {% if cookiecutter.user == "y" %}
   , "Login" : "login" / noArgs {% endif %}
   }
