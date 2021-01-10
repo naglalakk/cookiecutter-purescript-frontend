@@ -1,8 +1,6 @@
 cookiecutter-purescript-frontend
 ================================
 
-[![Codeship Status for naglalakk/cookiecutter-purescript-frontend](https://app.codeship.com/projects/21ebe630-ac2a-0137-40b9-3ef406672b9a/status?branch=master)](https://app.codeship.com/projects/362177)
-
 Cookiecutter for scaffolding a fresh purecsript frontend including. The structure of the project generated is borrowed directly from tomashoneyman [Real World Halogen](https://github.com/thomashoneyman/purescript-halogen-realworld) which is a really good reference for how to structure a Halogen project. 
 
 *Note*
