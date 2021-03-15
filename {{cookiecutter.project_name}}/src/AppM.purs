@@ -1,32 +1,27 @@
 module AppM where
 
 import Prelude
-import Control.Monad.Reader.Trans   (class MonadAsk, ReaderT
-                                    ,ask, asks, runReaderT) {% if cookiecutter.user == "y" %}
-import Data.Argonaut                (decodeJson)
-import Data.Either                  (Either(..))
-import Data.Maybe                   (Maybe(..)) {% endif %}
-import Effect.Aff                   (Aff)
-import Effect.Aff.Class             (class MonadAff)
-import Effect.Class                 (class MonadEffect
-                                    ,liftEffect)
-import Effect.Console               as Console
-import Type.Equality                (class TypeEquals, from)
-import Routing.Duplex               (print)
-import Simple.JSON                  (write)
 
-{% if cookiecutter.user == "y" %}
-import Api.Endpoint                 as API
-import Api.Request                  (RequestMethod(..)
-                                    ,mkRequest) {% endif %}
-import Capability.LogMessages       (class LogMessages, logMessage)
-import Capability.Navigate          (class Navigate) {% if cookiecutter.user == "y" %}
-import Data.Auth                    (APIAuth(..)
-                                    ,apiAuth
-                                    ,base64encodeUserAuth) {% endif %}
-import Data.Environment             (Environment(..), Env)
-import Data.Route                   as Route {% if cookiecutter.user == "y" %}
-import Resource.User                (class ManageUser) {% endif %}
+import Affjax (printError)
+import Api.Endpoint as API
+import Api.Request (RequestMethod(..), mkRequest)
+import Capability.LogMessages (class LogMessages, logMessage)
+import Capability.Navigate (class Navigate)
+import Control.Monad.Reader.Trans (class MonadAsk, ReaderT, ask, asks, runReaderT)
+import Data.Argonaut (decodeJson, printJsonDecodeError)
+import Data.Auth (APIAuth(..), apiAuth, base64encodeUserAuth)
+import Data.Either (Either(..))
+import Data.Environment (Environment(..), Env)
+import Data.Maybe (Maybe(..))
+import Data.Route as Route
+import Effect.Aff (Aff)
+import Effect.Aff.Class (class MonadAff)
+import Effect.Class (class MonadEffect, liftEffect)
+import Effect.Console as Console
+import Resource.User (class ManageUser)
+import Routing.Duplex (print)
+import Simple.JSON (write)
+import Type.Equality (class TypeEquals, from)
 
 newtype AppM a = AppM (ReaderT Env Aff a)
 
@@ -62,21 +57,22 @@ instance navigateAppM :: Navigate AppM where
       env.pushInterface.pushState 
       (write {}) 
       href
-{% if cookiecutter.user == "y" %}
+
 instance manageUserAppM :: ManageUser AppM where
   loginUser auth = do
-    req <- mkRequest 
+    res <- mkRequest 
       { endpoint: API.UserLogin
       , method: Get
       , auth: Just $ Basic $ base64encodeUserAuth auth
       }
-    case req of
-      Just json -> do
-        let user = decodeJson json
+    case res of
+      Right json -> do
+        let user = decodeJson json.body
         case user of
           Right u -> pure $ Just u
           Left err -> do
-            logMessage err
+            logMessage $ printJsonDecodeError err
             pure Nothing
-      Nothing -> pure Nothing
-{% endif %}
+      Left err -> do
+        logMessage $ printError err
+        pure Nothing
