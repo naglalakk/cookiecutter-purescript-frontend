@@ -1,45 +1,42 @@
 module Main where
 
-import Prelude {% if cookiecutter.user == "y" %}
-import Affjax                       (request)
-import Data.Argonaut                (decodeJson) {% endif %}
-import Data.Either                  ({% if cookiecutter.user == "y" %}Either(..), {% endif %}hush) {% if cookiecutter.user == "y" %}
-import Data.Foldable                (traverse_) {% endif %}
-import Data.Maybe                   (Maybe(..))
-import Data.String                  (drop)
-import Effect                       (Effect)
-import Effect.Aff                   (Aff, launchAff_) {% if cookiecutter.user == "y" %}
-import Effect.Aff.Bus               as Bus
-import Effect.Ref                   as Ref {% endif %}
-import Halogen                      as H
-import Halogen.Aff                  as HA
-import Halogen.HTML                 as HH
-import Halogen.VDom.Driver          (runUI)
-import Routing.Duplex               (parse)
-import Routing.PushState            (makeInterface)
+import Prelude
 
-import AppM                         (runAppM) {% if cookiecutter.user == "y" %}
-import Api.Request                  (RequestMethod(..)
-                                    ,defaultRequest)
-import Api.Endpoint                 as API {% endif %}
-import Component.Router             as Router
-import Config                       (environment, apiURL) {% if cookiecutter.user == "y" %}
-import Data.Auth                    (APIAuth(..)
-                                    ,readToken) {% endif %}
-import Data.Environment             (Env {% if cookiecutter.user == "y" %}
-                                    ,UserEnv {% endif %}
-                                    ,toEnvironment)
-import Data.Route                   (routeCodec) {% if cookiecutter.user == "y" %}
-import Data.User                    (User) {% endif %}
-import Data.URL                     (BaseURL(..))
+import Affjax (printError, request)
+import Api.Endpoint as API
+import Api.Request (RequestMethod(..), defaultRequest)
+import AppM (runAppM)
+import Component.Router as Router
+import Config (environment, apiURL)
+import Data.Argonaut (JsonDecodeError, decodeJson)
+import Data.Auth (APIAuth(..), readToken)
+import Data.Either (Either(..), hush)
+import Data.Environment (Env, UserEnv, toEnvironment)
+import Data.Foldable (traverse_)
+import Data.Maybe (Maybe(..))
+import Data.Route (routeCodec)
+import Data.String (drop)
+import Data.URL (BaseURL(..))
+import Data.User (User)
+import Effect (Effect)
+import Effect.Aff (Aff, launchAff_)
+import Effect.Aff.Bus as Bus
+import Effect.Class.Console (logShow)
+import Effect.Ref as Ref
+import Halogen as H
+import Halogen.Aff as HA
+import Halogen.HTML as HH
+import Halogen.VDom.Driver (runUI)
+import Routing.Duplex (parse)
+import Routing.PushState (makeInterface)
 
 main :: Effect Unit
 main = HA.runHalogenAff do
-  body <- HA.awaitBody {% if cookiecutter.user == "y" %}
+  body <- HA.awaitBody 
   currentUser <- H.liftEffect $ Ref.new Nothing
-  userBus <- H.liftEffect Bus.make {% endif %}
+  userBus <- H.liftEffect Bus.make 
   interface <- H.liftEffect makeInterface 
-  {% if cookiecutter.user == "y" %}
+  
   H.liftEffect readToken >>= traverse_ \token -> do
     let 
       requestOptions = 
@@ -48,29 +45,30 @@ main = HA.runHalogenAff do
         , auth: Just $ Basic token
         }
     res <- H.liftAff $ request $ defaultRequest (BaseURL apiURL) requestOptions
-
-    case (hush res.body) of
-      Just json -> do
+  
+    case res of
+      Right r -> do
         let 
-          user = (decodeJson json) :: Either String User
+          user = (decodeJson r.body) :: Either JsonDecodeError User
         case user of
           Right u -> H.liftEffect $ Ref.write (Just u) currentUser
           Left err -> pure unit
-      Nothing -> pure unit
-  {% endif %}
+      Left err -> 
+        logShow $ printError err
+      
   let 
     environ = toEnvironment environment
     url     = BaseURL apiURL
     env :: Env
     env = 
       { environment: environ
-      , apiURL: url {% if cookiecutter.user == "y" %}
-      , userEnv: userEnv {% endif %}
+      , apiURL: url 
+      , userEnv: userEnv 
       , pushInterface: interface
-      } {% if cookiecutter.user == "y" %}
+      } 
       where
         userEnv :: UserEnv
-        userEnv = { currentUser, userBus } {% endif %}
+        userEnv = { currentUser, userBus } 
 
     rootComponent :: H.Component HH.HTML Router.Query Unit Void Aff
     rootComponent = H.hoist (runAppM env) Router.component
