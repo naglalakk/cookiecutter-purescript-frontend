@@ -5,17 +5,22 @@ Cookiecutter for scaffolding a fresh purecsript frontend including. The structur
 
 *Note*
 
-This is a cookiecutter for projects using Halogen version 5 with Purescript >= 0.13
-If you are looking for Halogen-4 check out the [v4 branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v4). Do note that this
-branch is stale and not being maintained anymore.
+This is a cookiecutter for projects using Halogen version 6 with Purescript >= 0.14.7
+
+If you are looking for Halogen-5, check out the [v5
+branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v5)
+
+If you are looking for Halogen-4 check out the [v4 branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v4). 
+
+Do note that these branches are stale and not being maintained anymore.
 
 Including
 
 * Package management using [Spago](https://github.com/spacchetti/spago)
 * [purescript-express](https://github.com/nkly/purescript-express) running a node server
-* Bundling with [Parcel](https://parceljs.org)
+* Bundling with [esbuild](https://esbuild.github.io/)
 * A simple ready-to-use [Halogen](https://github.com/slamdata/purescript-halogen) component
-* Makefile for common tasks
+* npm scripts for common tasks
 
 ### Other useful packages included
 
@@ -36,45 +41,34 @@ Including
 * [Cookiecutter](https://github.com/audreyr/cookiecutter)
 * [Purescript](https://github.com/purescript/purescript)
 * [Spago](https://github.com/spacchetti/spago)
-* npm or yarn
-* [Parcel](https://parceljs.org) 
+* [npm](https://www.npmjs.com/)
+* [esbuild](https://esbuild.github.io/)
 
 ### Usage
 
     cookiecutter https://github.com/naglalakk/cookiecutter-purescript-frontend
 
-This will ask you a couple of question like the name of your project, the
-version and if you want to include a user authentication setup (on by
-default).
+This will ask you about the name of your project and version number.
 
 Once you have generated your project with cookiecutter you can start by running install for all dependencies with
 
-    make install
+    spago install && npm i
 
 This will install dependencies for Purescript with Spago and then install the js dependencies needed for the server ( express and pug )
 
-This project includes a Makefile with a few common tasks:
+This project includes scripts with a few common tasks:
 
 * build   - Builds code from src
-* bundle  - Bundle code from src to commonjs format
-* browser - Make a browser compatible js bundle
-* clean   - Clean up generated output (e.g. docs)
+* dev     - Run a dev server on port 8080
+* clean   - Clean up generated output (e.g. docs, build etc)
 * docs    - Generate docs from ./spago and ./src folders
-* install - Install all dependencies
-* server  - Starts development server on port 8080
 * test    - Runs tests for Purescript code
-
-The default package manager set for this project is yarn.
-You can change this by editing the PCK_MANAGER variable in the Makefile
-
-Feel free to edit the Makefile or simply drop it. It's mostly there for demonstration purpose on how to use spago with Purescript
 
 Once you have installed everything you can run
 
-    make bundle && make server
+    npm run dev
 
-This will build the purescript code, create a bundle in commonjs and start the development server on localhost port 8080
-Now you should be able to navigate to localhost:8080 in your browser and see a button which says "Off". If you click it will turn On.
+This will run a development server on port :8080
 
 ### Environment variables
 
@@ -82,18 +76,22 @@ Environment variables can be included in a .env file .e.g
 
     echo "PORTNR=8081" > .env
 
+A .env.example is located at the root of this project. You can start using it
+by running 
+
+    cp .env.example .env
+
 **PORTNR**
 
-Sets the port for the server (defaults to 8080)
+The port number the server will be running on. The default port is 8080
 
 **API_URL**
 
-The URL of the API service being used with your generated frontend
+The API URL for the backend service
 
 **API_KEY**
 
-Only applies if user == "y" in your cookiecutter settings. This is a base64
-encoded string ( base64(username:password) )
+A base64 encoded authentication string
 
 ### Structure
 

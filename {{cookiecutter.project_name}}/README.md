@@ -6,7 +6,7 @@
 * [Purescript](https://github.com/purescript/purescript)
 * [Spago](https://github.com/spacchetti/spago)
 * [npm](https://www.npmjs.com/)
-* [Parcel](https://parceljs.org) 
+* [esbuild](https://esbuild.github.io/) 
 
 ### Installation
 
