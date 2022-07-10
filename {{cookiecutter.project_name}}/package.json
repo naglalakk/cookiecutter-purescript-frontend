@@ -3,8 +3,21 @@
   "version": "{{ cookiecutter.version }}",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf node_modules generated-docs output .spago static/build/*.js static/dist/*.js *.lock .cache",
+    "dev": "spago bundle-app --main Server --to server.js && node server.js",
+    "docs": "purs docs 'src/*.purs' 'src/**/*.purs' --format html",
+    "build": "spago build && spago bundle-app --to static/build/index.js && ./esbuild.js",
+    "test": "spago test"
+  },
   "dependencies": {
     "express": "^4.16.4",
-    "text-encoding": "^0.7.0"
+    "text-encoding": "^0.7.0",
+    "url": "^0.11.0",
+    "xhr2": "^0.2.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1",
+    "esbuild": "^0.14.48"
   }
 }

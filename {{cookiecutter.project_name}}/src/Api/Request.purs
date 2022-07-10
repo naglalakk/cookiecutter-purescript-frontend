@@ -7,7 +7,6 @@ import Affjax.RequestBody as RB
 import Affjax.RequestHeader (RequestHeader(..))
 import Affjax.ResponseFormat as RF
 import Api.Endpoint (Endpoint, endpointCodec)
-import Control.Monad.Reader.Class (class MonadAsk, ask)
 import Data.Argonaut.Core (Json)
 import Data.Auth (APIAuth(..))
 import Data.Either (Either(..))
@@ -16,7 +15,9 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
 import Data.URL (BaseURL(..))
 import Effect.Aff.Class (class MonadAff, liftAff)
+import Halogen.Store.Monad (class MonadStore, getStore, updateStore)
 import Routing.Duplex (print)
+import Store(Store, Action)
 import Web.XHR.FormData (FormData)
 
 data RequestMethod
@@ -40,7 +41,6 @@ type FormDataOptions =
   , auth     :: Maybe APIAuth 
   }
 
-
 defaultRequest :: BaseURL        ->
                   RequestOptions ->
                   Request Json
@@ -52,7 +52,7 @@ defaultRequest (BaseURL baseURL) { endpoint, method, auth} =
         [ RequestHeader "Authorization" $ "Basic " <> token ]
       Just (Token token) -> 
         [ RequestHeader "Authorization" $ "Bearer " <> token ]
-      Nothing        -> []
+      Nothing -> []
   , content: RB.json <$> body
   , username: Nothing
   , password: Nothing
@@ -76,7 +76,8 @@ formDataRequest (BaseURL baseURL) { endpoint, method, auth} =
   , headers: case auth of
       Just (Basic token) -> 
         [ RequestHeader "Authorization" $ "Basic " <> token ]
-      Just      _          -> []
+      Just (Token token) -> 
+        [ RequestHeader "Authorization" $ "Bearer " <> token ]
       Nothing              -> []
   , content: RB.formData <$> body
   , username: Nothing
@@ -91,18 +92,18 @@ formDataRequest (BaseURL baseURL) { endpoint, method, auth} =
 
 mkRequest :: forall m r
            . MonadAff m
-          => MonadAsk { apiURL :: BaseURL | r } m
+          => MonadStore Action Store m
           => RequestOptions
           -> m (Either Error (Response Json))
 mkRequest opts = do
-  { apiURL } <- ask
-  liftAff $ request $ defaultRequest apiURL opts
+  { baseUrl } <- getStore
+  liftAff $ request $ defaultRequest baseUrl opts
 
 mkFormDataRequest :: forall m r
                    . MonadAff m
-                  => MonadAsk { apiURL :: BaseURL | r } m
+                  => MonadStore Action Store m
                   => FormDataOptions
                   -> m (Either Error (Response Json))
 mkFormDataRequest opts = do
-  { apiURL } <- ask
-  liftAff $ request $ formDataRequest apiURL opts
+  { baseUrl } <- getStore
+  liftAff $ request $ formDataRequest baseUrl opts

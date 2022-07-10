@@ -1,23 +1,18 @@
 module Server where
 
-import Prelude hiding                   (apply)
-import Data.Int                         (fromString)
-import Data.Maybe                       (fromMaybe)
-import Dotenv (loadFile)                as Dotenv
-import Effect                           (Effect)
-import Effect.Aff                       (launchAff_)
-import Effect.Class                     (liftEffect)
-import Effect.Console                   (log)
-import Node.Express.App                 (App
-                                        ,useAt
-                                        ,listenHttp
-                                        ,get)
-import Node.Express.Response            (sendFile)
-import Node.Express.Middleware.Static   (static)
-import Node.Process                     (lookupEnv)
-
-import Data.Environment                 (Environment(..)
-                                        ,toEnvironment)
+import Prelude hiding (apply)
+import Data.Int (fromString)
+import Data.Maybe (fromMaybe)
+import Dotenv (loadFile) as Dotenv
+import Effect (Effect)
+import Effect.Aff (launchAff_)
+import Effect.Class (liftEffect)
+import Effect.Console (log)
+import Node.Express.App (App, useAt, listenHttp, get)
+import Node.Express.Response (sendFile)
+import Node.Express.Middleware.Static (static)
+import Node.Process (lookupEnv)
+import Store (Environment(..), toEnvironment)
 
 app :: Environment -> App
 app env = do

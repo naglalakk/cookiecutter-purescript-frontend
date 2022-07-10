@@ -9,3 +9,4 @@
 /.psa*
 /.spago
 .env
+server.js

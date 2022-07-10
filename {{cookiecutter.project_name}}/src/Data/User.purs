@@ -1,19 +1,17 @@
 module Data.User where
 
 import Prelude
-import Data.Argonaut            (decodeJson
-                                ,(~>),(:=)
-                                ,(.:), (.:?))
-import Data.Argonaut.Encode     (class EncodeJson)
-import Data.Argonaut.Decode     (class DecodeJson)
-import Data.Generic.Rep         (class Generic)
-import Data.Generic.Rep.Show    (genericShow)
-import Data.Maybe               (Maybe)
-import Data.Newtype             (class Newtype)
-import Formless                 as F
-import Timestamp                (Timestamp)
+import Data.Argonaut (decodeJson, (~>),(:=), (.:), (.:?), toString)
+import Data.Argonaut.Encode (class EncodeJson)
+import Data.Argonaut.Decode (class DecodeJson)
+import Data.Either (Either(..), hush)
+import Data.Email (Email)
+import Data.Generic.Rep (class Generic)
+import Data.Maybe (Maybe(..))
+import Data.Newtype (class Newtype)
+import Data.Show.Generic (genericShow)
+import Timestamp (Timestamp)
 
-import Data.Email               (Email)
 
 newtype UserId = UserId Int
 
@@ -28,9 +26,6 @@ derive newtype instance decodeJsonUserId :: DecodeJson UserId
 instance showUserId :: Show UserId where
   show = genericShow
 
-instance initialUserId :: F.Initial UserId where
-  initial = UserId 0
-
 newtype Username = Username String
 
 derive instance newtypeUsername :: Newtype Username _
@@ -44,16 +39,17 @@ derive newtype instance decodeJsonUsername :: DecodeJson Username
 instance showUsername :: Show Username where
   show = genericShow
 
+
 -- | User type. 
 --   We do not keep the password
 --   within this data structure for safety
 --   reasons.
 newtype User = User 
-  { id       :: UserId
-  , username :: Username
-  , email    :: Maybe Email
-  , isAdmin  :: Boolean
-  , createdAt :: Timestamp
+  { id        :: UserId
+  , username  :: Username
+  , email     :: Maybe Email
+  , isAdmin   :: Boolean
+  , createdAt :: Timestamp 
   , updatedAt :: Maybe Timestamp
   }
 
@@ -61,6 +57,7 @@ derive instance newtypeUser :: Newtype User _
 derive instance genericUser :: Generic User _
 derive instance eqUser :: Eq User
 derive instance ordUser :: Ord User
+
 
 instance encodeJsonUser :: EncodeJson User where
   encodeJson (User user)

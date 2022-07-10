@@ -1,3 +1,3 @@
 exports.environment = process.env.ENVIRONMENT || ""
-exports.apiURL      = process.env.API_URL     || "" {% if cookiecutter.user == "y" %}
-exports.apiKey      = process.env.API_KEY     || "" {% endif %}
+exports.baseUrl = process.env.BASE_URL || ""
+exports.apiKey = process.env.API_KEY || ""

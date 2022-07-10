@@ -1,22 +1,23 @@
 module Page.Login where
 
 import Prelude
-import Control.Monad.Reader         (class MonadAsk, asks)
-import Data.Const                   (Const)
-import Data.Maybe                   (Maybe(..))
-import Data.Symbol                  (SProxy(..))
-import Effect.Aff.Class             (class MonadAff)
-import Halogen                      as H
-import Halogen.HTML                 as HH
-import Formless                     as F
-
-import Api.Utils                    (authenticate)
-import Capability.Navigate          (class Navigate)
-import Component.HTML.Utils         (css)
-import Data.Auth                    (UserAuth)
-import Data.Environment             (UserEnv)
-import Form.Login                   as LoginForm
-import Resource.User                (class ManageUser)
+import Api.Utils (authenticate)
+import Capability.Navigate (class Navigate, navigate)
+import Component.HTML.Utils (css)
+import Control.Monad.Reader (class MonadAsk, asks)
+import Data.Auth (UserAuth)
+import Data.Const (Const)
+import Data.Maybe (Maybe(..))
+import Data.Route (Route(Home))
+import Data.Symbol (SProxy(..))
+import Effect.Aff.Class (class MonadAff)
+import Form.Login as LoginForm
+import Halogen as H
+import Halogen.HTML as HH
+import Halogen.Store.Monad (class MonadStore)
+import Resource.User (class ManageUser)
+import Store as Store
+import Type.Proxy (Proxy(..))
 
 type State =
   { redirect :: Boolean }
@@ -28,17 +29,16 @@ data Action
   = HandleLoginForm UserAuth
 
 type ChildSlots = (
-  loginForm :: H.Slot (F.Query LoginForm.LoginForm LoginForm.Query LoginForm.ChildSlots) UserAuth Unit
+  loginForm :: LoginForm.Slot Unit
 )
-type Query = Const Void
 
-component :: forall m r
+component :: forall q o m
            . Monad m
           => MonadAff m
-          => MonadAsk { userEnv :: UserEnv | r } m
+          => MonadStore Store.Action Store.Store m
           => ManageUser m
           => Navigate m
-          => H.Component HH.HTML Query Input Void m
+          => H.Component q Input o m
 component =
   H.mkComponent
     { initialState: identity
@@ -48,14 +48,14 @@ component =
       }
     }
   where
+  handleAction :: forall o. Action -> H.HalogenM State Action ChildSlots o m Unit
   handleAction = case _ of
     HandleLoginForm auth -> do
-      env <- asks _.userEnv
-      currentUser <- authenticate env auth
+      currentUser <- authenticate auth
       case currentUser of
         Just user -> do
-          -- direct user to auth page here
-          pure unit
+          -- Navigate user to logged-in page
+          navigate Home
         Nothing   -> pure unit
 
   render :: State -> H.ComponentHTML Action ChildSlots m
@@ -68,8 +68,8 @@ component =
     where
       loginSlot =
         HH.slot
-        (SProxy :: SProxy "loginForm")
+        (Proxy :: Proxy "loginForm")
         unit
         (LoginForm.component)
         unit
-        (Just <<< HandleLoginForm)
+        HandleLoginForm

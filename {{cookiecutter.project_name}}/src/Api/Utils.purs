@@ -1,35 +1,30 @@
 module Api.Utils where
 
 import Prelude
-import Data.Maybe           (Maybe(..))
-import Data.Newtype         (unwrap)
-import Effect.Ref           as Ref
-import Effect.Aff.Class     (class MonadAff, liftAff)
-import Effect.Aff.Bus       as Bus
-import Effect.Class         (liftEffect)
-
-import Data.Auth            (UserAuth(..), base64encode, writeToken)
-import Data.Environment     (UserEnv)
-import Data.User            (User)
-import Resource.User        (class ManageUser
-                            ,loginUser)
+import Data.Auth (UserAuth(..), base64encode, writeToken)
+import Data.Maybe (Maybe(..))
+import Data.User (User)
+import Effect.Aff.Class (class MonadAff)
+import Effect.Class (liftEffect)
+import Halogen.Store.Monad (class MonadStore, updateStore)
+import Resource.User (class ManageUser, login)
+import Store as Store
 
 authenticate :: forall m
               . MonadAff m
+             => MonadStore Store.Action Store.Store m
              => ManageUser m
-             => UserEnv
-             -> UserAuth
+             => UserAuth
              -> m (Maybe User)
-authenticate { currentUser, userBus } (UserAuth auth) = do
-  lUser <- loginUser $ UserAuth auth
-  case lUser of
-    Just user -> do
+authenticate (UserAuth auth) = do
+  user <- login $ UserAuth auth
+  case user of
+    Just u -> do
       let 
         token = base64encode 
-                (unwrap auth.username) 
-                (unwrap auth.password)
+                auth.username
+                auth.password
       liftEffect $ writeToken token
-      liftEffect $ Ref.write (Just user) currentUser
-      liftAff    $ Bus.write (Just user) userBus
-      pure lUser
+      updateStore $ Store.LoginUser u
+      pure user 
     Nothing -> pure Nothing
