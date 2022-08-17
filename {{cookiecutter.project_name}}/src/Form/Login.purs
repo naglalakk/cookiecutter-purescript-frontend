@@ -1,4 +1,4 @@
-module Form.Login where 
+module Form.Login where
 
 import Prelude
 import Data.Auth (UserAuth(..))
@@ -13,10 +13,10 @@ import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
-
+import DOM.HTML.Indexed.InputType (InputType(..))
 
 type LoginForm :: (Type -> Type -> Type -> Type) -> Row Type
-type LoginForm f = 
+type LoginForm f =
   ( username :: f String FormError String
   , password :: f String FormError String
   )
@@ -46,12 +46,11 @@ component = F.formless { liftAction: Eval } mempty $ H.mkComponent
     Receive context -> H.put context
     Eval action -> F.eval action
 
-
   handleQuery :: forall a. F.FormQuery _ _ _ _ a -> H.HalogenM _ _ _ _ _ (Maybe a)
   handleQuery = do
     let
       validation :: { | LoginForm F.FieldValidation }
-      validation = 
+      validation =
         { username: validateRequiredStr
         , password: validateRequiredStr
         }
@@ -62,19 +61,21 @@ component = F.formless { liftAction: Eval } mempty $ H.mkComponent
     F.handleSubmitValidate handleSuccess F.validate validation
 
   render :: FormContext -> H.ComponentHTML Action () m
-  render { formActions, fields, actions } = 
-    HH.form 
+  render { formActions, fields, actions } =
+    HH.form
       [ HE.onSubmit formActions.handleSubmit ]
       [ textInput
-        { label: "Username"
-        , state: fields.username
-        , action: actions.username
-        }
-        []
+          { label: "Username"
+          , state: fields.username
+          , action: actions.username
+          , _type: InputText
+          }
+          []
       , textInput
-        { label: "Password"
-        , state: fields.password
-        , action: actions.password
-        }
-        []
+          { label: "Password"
+          , state: fields.password
+          , action: actions.password
+          , _type: InputPassword
+          }
+          []
       ]

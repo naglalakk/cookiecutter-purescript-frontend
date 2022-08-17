@@ -3,18 +3,19 @@ cookiecutter-purescript-frontend
 
 Cookiecutter for scaffolding a fresh purecsript frontend including. The structure of the project generated is borrowed directly from tomashoneyman [Real World Halogen](https://github.com/thomashoneyman/purescript-halogen-realworld) which is a really good reference for how to structure a Halogen project. 
 
-*Note*
+**Version**
 
-This is a cookiecutter for projects using Halogen version 6 with Purescript >= 0.14.7
+This is a cookiecutter for projects using Halogen version 6 with Purescript >=
+0.14.7 < 0.15.0
 
-If you are looking for Halogen-5, check out the [v5
-branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v5)
+Older branches
 
-If you are looking for Halogen-4 check out the [v4 branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v4). 
+* [Halogen v5 branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v5)
+* [Halogen v4 branch](https://github.com/naglalakk/cookiecutter-purescript-frontend/tree/v4). 
 
 Do note that these branches are stale and not being maintained anymore.
 
-Including
+Includes
 
 * Package management using [Spago](https://github.com/spacchetti/spago)
 * [purescript-express](https://github.com/nkly/purescript-express) running a node server
@@ -24,19 +25,17 @@ Including
 
 ### Other useful packages included
 
-**Halogen Formless for dealing with forms**
-[halogen-formless](https://github.com/thomashoneyman/purescript-halogen-formless)
+* [halogen-formless](https://github.com/thomashoneyman/purescript-halogen-formless)
+  : Halogen Formless for dealing with forms
 
-**Halogen Select for selection interfaces**
-[halogen-select](https://github.com/citizennet/purescript-halogen-select)
+* [halogen-select](https://github.com/citizennet/purescript-halogen-select)
+  : Halogen Select for selection interfaces
 
-**CSS library for CSS-in-Purescript**
-[purescript-css](https://github.com/slamdata/purescript-css)
+* [purescript-css](https://github.com/slamdata/purescript-css)
+  : CSS library for CSS-in-Purescript
 
 
 ### Requirements
-
-**Required**
 
 * [Cookiecutter](https://github.com/audreyr/cookiecutter)
 * [Purescript](https://github.com/purescript/purescript)
@@ -72,26 +71,38 @@ This will run a development server on port :8080
 
 ### Environment variables
 
-Environment variables can be included in a .env file .e.g
-
-    echo "PORTNR=8081" > .env
+Environment variables can be included in a .env file.
 
 A .env.example is located at the root of this project. You can start using it
 by running 
 
     cp .env.example .env
 
+#### Environment variables included
+
 **PORTNR**
 
-The port number the server will be running on. The default port is 8080
+The port number the server will be running on.  Default: 8080
+
+**ENVIRONMENT**
+
+Environment to run in. Default: Development
 
 **API_URL**
 
-The API URL for the backend service
+Your custom API URL for backend requests
 
-**API_KEY**
+**API_TOKEN**
 
-A base64 encoded authentication string
+Custom authentication API_TOKEN. Only applies if you're using a backend API with a Bearer Authorization scheme.
+
+**API_USERNAME**
+
+Custom username for Basic authentication. Only applies if you're using a backend API with a Basic Authorization scheme.
+
+**API_USERPASS**
+
+Custom password for Basic authentication. Only applies if you're using a backend API with a Basic Authorization scheme.
 
 ### Structure
 

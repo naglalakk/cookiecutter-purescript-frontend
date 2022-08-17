@@ -16,21 +16,21 @@ import Store (Environment(..), toEnvironment)
 
 app :: Environment -> App
 app env = do
-    case env of
-      Development -> useAt "/static" (static "static")
-      _ -> pure unit
-    -- route all requests to the same template
-    get "*" $ sendFile "static/views/index.html"
+  case env of
+    Development -> useAt "/static" (static "static")
+    _ -> pure unit
+  -- route all requests to the same template
+  get "*" $ sendFile "static/views/index.html"
 
 main :: Effect Unit
 main = launchAff_ do
   _ <- Dotenv.loadFile
   liftEffect do
     port <- lookupEnv "PORTNR"
-    env  <- lookupEnv "ENVIRONMENT"
+    env <- lookupEnv "ENVIRONMENT"
     -- Port defaults to 8080
-    let 
-      p   = fromMaybe "8080" port
+    let
+      p = fromMaybe "8080" port
       envStr = fromMaybe "Development" env
     listenHttp (app $ toEnvironment envStr) (fromMaybe 8080 $ fromString p) \_ ->
-      log $ "Listening on "  <> p
+      log $ "Listening on " <> p

@@ -27,20 +27,18 @@ import Web.HTML (window)
 import Web.HTML.Window as Window
 import Web.HTML.Location as Location
 
-
-type State = 
+type State =
   { route :: Maybe Route
   , currentUser :: Maybe User
   }
 
-data Query a
-  = Navigate Route a 
+data Query a = Navigate Route a
 
-data Action 
+data Action
   = Initialize
   | Receive (Connected (Maybe User) Unit)
 
-type ChildSlots = 
+type ChildSlots =
   ( home :: OpaqueSlot Unit
   , login :: OpaqueSlot Unit
   )
@@ -51,12 +49,12 @@ component
   => MonadStore Store.Action Store.Store m
   => ManageUser m
   => Navigate m
-  => H.Component Query Unit Void m 
-component = connect (selectEq _.currentUser) $ H.mkComponent 
-  { initialState: \{ context: currentUser } -> 
-    { route: Nothing
-    , currentUser: currentUser
-    }
+  => H.Component Query Unit Void m
+component = connect (selectEq _.currentUser) $ H.mkComponent
+  { initialState: \{ context: currentUser } ->
+      { route: Nothing
+      , currentUser: currentUser
+      }
   , render
   , eval: H.mkEval $ H.defaultEval
       { handleQuery = handleQuery
@@ -72,20 +70,20 @@ component = connect (selectEq _.currentUser) $ H.mkComponent
       w <- H.liftEffect window
       location <- liftEffect $ Window.location w
       p <- H.liftEffect $ Location.pathname location
-      let 
+      let
         finalPath = drop 1 p
         initialRoute = hush $ (RD.parse routeCodec finalPath)
-      H.modify_ _ 
+      H.modify_ _
         { route = Just $ fromMaybe Home initialRoute
         }
-    
+
     Receive { context: currentUser } ->
       H.modify_ _ { currentUser = currentUser }
 
   handleQuery :: forall a. Query a -> H.HalogenM State Action ChildSlots Void m (Maybe a)
   handleQuery = case _ of
     Navigate dest a -> do
-      
+
       { route, currentUser } <- H.get
       when (route /= Just dest) do
         case (isJust currentUser && dest `elem` [ Login ]) of
@@ -99,10 +97,10 @@ component = connect (selectEq _.currentUser) $ H.mkComponent
       HH.slot (Proxy :: _ "login") unit Login.component { redirect: false } absurd
     Just _ ->
       html
-  
+
   render :: State -> H.ComponentHTML Action ChildSlots m
   render { route, currentUser } = case route of
-    Just Home -> 
+    Just Home ->
       HH.slot (Proxy :: _ "home") unit Home.component unit absurd
     Just Login ->
       HH.slot (Proxy :: _ "login") unit Login.component { redirect: true } absurd

@@ -1,7 +1,7 @@
 module Data.User where
 
 import Prelude
-import Data.Argonaut (decodeJson, (~>),(:=), (.:), (.:?), toString)
+import Data.Argonaut (decodeJson, (~>), (:=), (.:), (.:?), toString)
 import Data.Argonaut.Encode (class EncodeJson)
 import Data.Argonaut.Decode (class DecodeJson)
 import Data.Either (Either(..), hush)
@@ -11,7 +11,6 @@ import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Show.Generic (genericShow)
 import Timestamp (Timestamp)
-
 
 newtype UserId = UserId Int
 
@@ -39,17 +38,16 @@ derive newtype instance decodeJsonUsername :: DecodeJson Username
 instance showUsername :: Show Username where
   show = genericShow
 
-
 -- | User type. 
 --   We do not keep the password
 --   within this data structure for safety
 --   reasons.
-newtype User = User 
-  { id        :: UserId
-  , username  :: Username
-  , email     :: Maybe Email
-  , isAdmin   :: Boolean
-  , createdAt :: Timestamp 
+newtype User = User
+  { id :: UserId
+  , username :: Username
+  , email :: Maybe Email
+  , isAdmin :: Boolean
+  , createdAt :: Timestamp
   , updatedAt :: Maybe Timestamp
   }
 
@@ -58,12 +56,10 @@ derive instance genericUser :: Generic User _
 derive instance eqUser :: Eq User
 derive instance ordUser :: Ord User
 
-
 instance encodeJsonUser :: EncodeJson User where
-  encodeJson (User user)
-    =  "username"    := user.username
-    ~> "email"      := user.email
-    ~> "is_admin"   := user.isAdmin
+  encodeJson (User user) = "username" := user.username
+    ~> "email" := user.email
+    ~> "is_admin" := user.isAdmin
     ~> "created_at" := user.createdAt
     ~> "updated_at" := user.updatedAt
 
@@ -71,14 +67,14 @@ instance decodeJsonUser :: DecodeJson User where
   decodeJson json = do
     obj <- decodeJson json
     id <- obj .: "id"
-    let 
+    let
       userId = UserId id
     username <- obj .: "username"
-    email    <- obj .:? "email"
-    isAdmin  <- obj .: "is_admin"
+    email <- obj .:? "email"
+    isAdmin <- obj .: "is_admin"
     createdAt <- obj .: "created_at"
     updatedAt <- obj .:? "updated_at"
-    pure $ User 
+    pure $ User
       { id: userId
       , username: username
       , email: email

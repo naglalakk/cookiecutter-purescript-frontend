@@ -7,15 +7,14 @@ import Data.Const (Const)
 import Data.Maybe (Maybe(..))
 import Halogen as H
 import Halogen.HTML as HH
-import Type.Proxy(Proxy(..))
-
+import Type.Proxy (Proxy(..))
 
 type State = Maybe Int
 
 data Action = NoAction
 
-type ChildSlots = 
-  ( button :: OpaqueSlot Unit)
+type ChildSlots =
+  (button :: OpaqueSlot Unit)
 
 component :: forall q o m. H.Component q Unit o m
 component =
@@ -30,6 +29,6 @@ component =
   render state =
     HH.div_
       [ HH.h1_
-        [ HH.text "Button" ]
+          [ HH.text "Button" ]
       , HH.slot (Proxy :: _ "button") unit Button.component unit absurd
       ]

@@ -4,6 +4,7 @@ import Prelude
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import DOM.HTML.Indexed (HTMLinput)
+import DOM.HTML.Indexed.InputType (InputType)
 import Form.Validation (FormError, errorToStr)
 import Formless (FieldAction, FieldState)
 import Halogen.HTML as H
@@ -15,6 +16,7 @@ type TextInput action output =
   { label :: String
   , state :: FieldState String FormError output
   , action :: FieldAction action String FormError output
+  , _type :: InputType
   }
 
 textInput
@@ -22,7 +24,7 @@ textInput
    . TextInput action output
   -> Array (HP.IProp HTMLinput action)
   -> H.ComponentHTML action slots m
-textInput { label, state, action } =
+textInput { label, state, action, _type } =
   withLabel { label, state } <<< HH.input <<< append
     [ HP.value state.value
     , case state.result of
@@ -31,8 +33,8 @@ textInput { label, state, action } =
         Just (Right _) -> HP.attr (HH.AttrName "aria-invalid") "false"
     , HE.onValueInput action.handleChange
     , HE.onBlur action.handleBlur
+    , HP.type_ _type
     ]
-
 
 type Labelled input output =
   { label :: String

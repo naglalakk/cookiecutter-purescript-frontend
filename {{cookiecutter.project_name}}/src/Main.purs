@@ -31,42 +31,42 @@ import Store (Store(..), toEnvironment)
 
 main :: Effect Unit
 main = HA.runHalogenAff do
-  body <- HA.awaitBody 
-  
+  body <- HA.awaitBody
+
   let
-    baseUrl = BaseURL Config.baseUrl
+    baseUrl = BaseURL Config.apiURL
     environment = toEnvironment Config.environment
   pushInterface <- H.liftEffect makeInterface
   user <- H.liftEffect $ Ref.new Nothing
-  
+
   H.liftEffect readToken >>= traverse_ \token -> do
-    let 
-      requestOptions = 
+    let
+      requestOptions =
         { endpoint: API.UserLogin
-        , method: Get 
+        , method: Get
         , auth: Just $ Basic token
         }
     res <- H.liftAff $ request $ defaultRequest baseUrl requestOptions
     case res of
       Right r -> do
-        let 
+        let
           decodedUser = (decodeJson r.body) :: Either JsonDecodeError User
         case decodedUser of
           Right u -> H.liftEffect $ Ref.write (Just u) user
           Left err -> do
             logShow err
             pure unit
-      Left err -> 
+      Left err ->
         logShow $ printError err
 
   currentUser <- H.liftEffect $ Ref.read user
-  let 
+  let
     initialStore :: Store
-    initialStore = 
+    initialStore =
       { baseUrl
       , environment
       , pushInterface
-      , currentUser 
+      , currentUser
       }
 
   rootComponent <- runAppM initialStore Router.component
@@ -74,8 +74,8 @@ main = HA.runHalogenAff do
 
   void $ H.liftEffect $ pushInterface.listen \location -> do
     let
-      new  = hush $ parse routeCodec $ drop 1 location.pathname
+      new = hush $ parse routeCodec $ drop 1 location.pathname
     case new of
-      Just r -> 
+      Just r ->
         launchAff_ $ halogenIO.query $ H.mkTell $ Router.Navigate r
       Nothing -> pure unit

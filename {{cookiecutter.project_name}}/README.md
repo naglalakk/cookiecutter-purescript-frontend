@@ -26,23 +26,37 @@ This project includes a few script commands located in package.json
 
 ### Environment variables
 
-Environment variables can be included in a .env file .e.g
-
-    echo "PORTNR=8081" > .env
+Environment variables can be included in a .env file.
 
 A .env.example is located at the root of this project. You can start using it
 by running 
 
     cp .env.example .env
 
+#### Environment variables included
+
 **PORTNR**
 
-The port number the server will be running on. The default port is 8080
+The port number the server will be running on.  Default: 8080
+
+**ENVIRONMENT**
+
+Environment to run in. Default: Development
 
 **API_URL**
 
-The API URL for the backend service
+Your custom API URL for backend requests
 
-**API_KEY**
+**API_TOKEN**
 
-A base64 encoded authentication string
+Custom authentication API_TOKEN. Only applies if you're using a backend API with a Bearer Authorization scheme.
+
+**API_USERNAME**
+
+Custom username for Basic authentication. Only applies if you're using a backend API with a Basic Authorization scheme.
+
+**API_USERPASS**
+
+Custom password for Basic authentication. Only applies if you're using a backend API with a Basic Authorization scheme.
+
+

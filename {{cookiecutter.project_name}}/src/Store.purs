@@ -4,10 +4,10 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Data.URL (BaseURL)
 import Routing.PushState (PushStateInterface)
-import Data.User(User)
+import Data.User (User)
 
 data Environment
-  = Development 
+  = Development
   | Staging
   | Production
 
@@ -15,12 +15,12 @@ derive instance eqEnvironment :: Eq Environment
 derive instance ordEnvironment :: Ord Environment
 
 toEnvironment :: String -> Environment
-toEnvironment "Production"  = Production
-toEnvironment "Staging"     = Staging
-toEnvironment _             = Development
+toEnvironment "Production" = Production
+toEnvironment "Staging" = Staging
+toEnvironment _ = Development
 
 type Store =
-  { baseUrl :: BaseURL 
+  { baseUrl :: BaseURL
   , environment :: Environment
   , pushInterface :: PushStateInterface
   , currentUser :: Maybe User

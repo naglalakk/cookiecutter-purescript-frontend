@@ -10,21 +10,22 @@ import Halogen.Store.Monad (class MonadStore, updateStore)
 import Resource.User (class ManageUser, login)
 import Store as Store
 
-authenticate :: forall m
-              . MonadAff m
-             => MonadStore Store.Action Store.Store m
-             => ManageUser m
-             => UserAuth
-             -> m (Maybe User)
+authenticate
+  :: forall m
+   . MonadAff m
+  => MonadStore Store.Action Store.Store m
+  => ManageUser m
+  => UserAuth
+  -> m (Maybe User)
 authenticate (UserAuth auth) = do
   user <- login $ UserAuth auth
   case user of
     Just u -> do
-      let 
-        token = base64encode 
-                auth.username
-                auth.password
+      let
+        token = base64encode
+          auth.username
+          auth.password
       liftEffect $ writeToken token
       updateStore $ Store.LoginUser u
-      pure user 
+      pure user
     Nothing -> pure Nothing

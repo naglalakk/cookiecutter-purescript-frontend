@@ -2,13 +2,12 @@ module AppM where
 
 import Prelude
 
-
 import Affjax (printError)
 import Api.Endpoint as API
 import Api.Request (RequestMethod(..), mkRequest)
 import Capability.LogMessages (class LogMessages, logMessage)
 import Capability.Navigate (class Navigate, navigate)
-import Data.Argonaut (decodeJson, printJsonDecodeError) 
+import Data.Argonaut (decodeJson, printJsonDecodeError)
 import Data.Auth (APIAuth(..), apiAuth, base64encodeUserAuth, removeToken)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
@@ -31,7 +30,6 @@ newtype AppM a = AppM (StoreT Store.Action Store.Store Aff a)
 runAppM :: forall q i o. Store.Store -> H.Component q i o AppM -> Aff (H.Component q i o Aff)
 runAppM store = runStoreT store Store.reduce <<< coerce
 
-
 derive newtype instance functorAppM :: Functor AppM
 derive newtype instance applyAppM :: Apply AppM
 derive newtype instance applicativeAppM :: Applicative AppM
@@ -42,7 +40,7 @@ derive newtype instance monadAffAppM :: MonadAff AppM
 derive newtype instance monadStoreAppM :: MonadStore Action Store AppM
 
 instance logMessagesAppM :: LogMessages AppM where
-  logMessage log = do 
+  logMessage log = do
     { environment } <- getStore
     liftEffect case environment of
       Store.Production -> pure unit
@@ -50,20 +48,19 @@ instance logMessagesAppM :: LogMessages AppM where
 
 instance navigateAppM :: Navigate AppM where
   navigate route = do
-    -- Get our PushStateInterface instance from env
+    -- Get our PushStateInterface instance from our Store
     { pushInterface } <- getStore
-    let 
+    let
       href = "/" <> (print Route.routeCodec route)
     -- pushState new destination
-    liftEffect $ 
-      pushInterface.pushState 
-      (write {}) 
-      href
- 
+    liftEffect $
+      pushInterface.pushState
+        (write {})
+        href
 
 instance manageUserAppM :: ManageUser AppM where
   login auth = do
-    res <- mkRequest 
+    res <- mkRequest
       { endpoint: API.UserLogin
       , method: Get
       , auth: Just $ Basic $ base64encodeUserAuth auth

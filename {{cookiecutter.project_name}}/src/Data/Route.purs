@@ -8,8 +8,8 @@ import Routing.Duplex.Generic (noArgs, sum)
 import Routing.Duplex.Generic.Syntax ((/))
 
 data Route
-  = Home 
-  | Login 
+  = Home
+  | Login
 
 derive instance genericRoute :: Generic Route _
 derive instance eqRoute :: Eq Route
@@ -21,5 +21,5 @@ instance showRoute :: Show Route where
 routeCodec :: RouteDuplex' Route
 routeCodec = sum
   { "Home": noArgs
-  , "Login" : "login" / noArgs
+  , "Login": "login" / noArgs
   }

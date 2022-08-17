@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf node_modules generated-docs output .spago static/build/*.js static/dist/*.js *.lock .cache",
-    "dev": "spago bundle-app --main Server --to server.js && node server.js",
+    "dev": "npm run build && spago bundle-app --main Server --to server.js && node server.js",
     "docs": "purs docs 'src/*.purs' 'src/**/*.purs' --format html",
     "build": "spago build && spago bundle-app --to static/build/index.js && ./esbuild.js",
     "test": "spago test"
