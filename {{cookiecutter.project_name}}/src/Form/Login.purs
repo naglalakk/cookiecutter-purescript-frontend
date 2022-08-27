@@ -1,6 +1,7 @@
 module Form.Login where
 
 import Prelude
+import Component.HTML.Utils (css)
 import Data.Auth (UserAuth(..))
 import Data.Const (Const)
 import Data.Maybe (Maybe(..))
@@ -78,4 +79,9 @@ component = F.formless { liftAction: Eval } mempty $ H.mkComponent
           , _type: InputPassword
           }
           []
+      , HH.input
+          [ css "button"
+          , HP.type_ HP.InputSubmit
+          , HP.value "Login"
+          ]
       ]
