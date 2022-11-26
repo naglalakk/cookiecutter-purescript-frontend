@@ -3,10 +3,11 @@ Welcome to a Spago project!
 You can edit this file as you like.
 -}
 { sources = [ "src/**/*.purs", "test/**/*.purs" ]
-, name = "{{ cookiecutter.project_name }}"
+, name = "test1"
 , dependencies =
   [ "aff"
   , "affjax"
+  , "affjax-web"
   , "argonaut"
   , "argonaut-codecs"
   , "argonaut-core"
@@ -15,20 +16,16 @@ You can edit this file as you like.
   , "const"
   , "css"
   , "dom-indexed"
-  , "dotenv"
   , "effect"
   , "either"
   , "encoding"
-  , "express"
   , "foldable-traversable"
   , "halogen"
   , "halogen-formless"
   , "halogen-store"
   , "http-methods"
-  , "integers"
   , "maybe"
   , "newtype"
-  , "node-process"
   , "prelude"
   , "psci-support"
   , "refs"

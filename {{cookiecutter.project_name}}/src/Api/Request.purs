@@ -2,7 +2,8 @@ module Api.Request where
 
 import Prelude
 
-import Affjax (Error, Request, Response, request)
+import Affjax (Error)
+import Affjax.Web (Request, Response, request)
 import Affjax.RequestBody as RB
 import Affjax.RequestHeader (RequestHeader(..))
 import Affjax.ResponseFormat as RF

@@ -9,7 +9,6 @@ import Data.Auth (UserAuth)
 import Data.Const (Const)
 import Data.Maybe (Maybe(..))
 import Data.Route (Route(Home))
-import Data.Symbol (SProxy(..))
 import Effect.Aff.Class (class MonadAff)
 import Form.Login as LoginForm
 import Halogen as H

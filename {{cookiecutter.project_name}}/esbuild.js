@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 
-require('dotenv').config()
+import {config} from 'dotenv'
+import {build} from 'esbuild'
 
+config()
 var envVars = {}
 
 Object.keys(process.env).forEach(function(key) {
   envVars[`process.env.${key}`] = JSON.stringify(process.env[key])
 });
 
-require('esbuild').build({
+build({
     entryPoints: ['static/build/index.js'],
     bundle: true,
     minify: true,

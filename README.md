@@ -5,8 +5,7 @@ Cookiecutter for scaffolding a fresh purecsript frontend including. The structur
 
 **Version**
 
-This is a cookiecutter for projects using Halogen version 6 with Purescript >=
-0.14.7 < 0.15.0
+This is a cookiecutter for projects using Halogen version 6 with Purescript >= 0.15.4
 
 Older branches
 
@@ -57,11 +56,12 @@ This will install dependencies for Purescript with Spago and then install the js
 
 This project includes scripts with a few common tasks:
 
-* build   - Builds code from src
 * dev     - Run a dev server on port 8080
-* clean   - Clean up generated output (e.g. docs, build etc)
+* bundle  - Bundle js files with esbuild
+* style   - Process SCSS files
 * docs    - Generate docs from ./spago and ./src folders
 * test    - Runs tests for Purescript code
+* clean   - Clean up generated output (e.g. docs, build etc)
 
 Once you have installed everything you can run
 
@@ -71,12 +71,8 @@ This will run a development server on port :8080
 
 ### Environment variables
 
-Environment variables can be included in a .env file.
-
-A .env.example is located at the root of this project. You can start using it
-by running 
-
-    cp .env.example .env
+Environment variables can be included in a .env file, located
+at the root of the project.
 
 #### Environment variables included
 

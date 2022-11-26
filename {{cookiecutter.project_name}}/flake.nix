@@ -1,5 +1,5 @@
 {
-  description = "{{cookiecutter.project_name}} app";
+  description = "{{ cookiecutter.project_name }}";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-21.11";
     easy-purescript-nix = {
@@ -13,7 +13,7 @@
   };
   outputs = { self, nixpkgs, easy-purescript-nix, ... }@inputs:
     let
-      name = "{{cookiecutter.project_name}}";
+      name = "{{ cookiecutter.project_name }}";
 
       supportedSystems = [
         "aarch64-darwin"
@@ -36,7 +36,7 @@
             nodejs-14_x
             nixpkgs-fmt
           ]) ++ (with easy-ps; [
-            purs-0_14_7
+            purs-0_15_4
             purs-tidy
             psa
             spago

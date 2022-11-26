@@ -2,7 +2,8 @@ module Main where
 
 import Prelude
 
-import Affjax (printError, request)
+import Affjax (printError)
+import Affjax.Web (request)
 import Api.Endpoint as API
 import Api.Request (RequestMethod(..), defaultRequest)
 import AppM (runAppM)
@@ -77,5 +78,5 @@ main = HA.runHalogenAff do
       new = hush $ parse routeCodec $ drop 1 location.pathname
     case new of
       Just r ->
-        launchAff_ $ halogenIO.query $ H.mkTell $ Router.Navigate r
+        launchAff_ $ void $ halogenIO.query $ H.mkTell $ Router.Navigate r
       Nothing -> pure unit

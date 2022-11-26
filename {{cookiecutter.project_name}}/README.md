@@ -1,4 +1,4 @@
-{ cookiecutter.project_name }}
+{{ cookiecutter.project_name }}
 ===
 
 ### Requirements
@@ -18,20 +18,18 @@ Once all the requirements are installed run
 
 This project includes a few script commands located in package.json
 
-* build   - Builds code from src
 * dev     - Run a dev server on port 8080
-* clean   - Clean up generated output (e.g. docs, build etc)
+* bundle  - Bundle js files with esbuild
+* style   - Process SCSS files
 * docs    - Generate docs from ./spago and ./src folders
 * test    - Runs tests for Purescript code
+* clean   - Clean up generated output (e.g. docs, build etc)
 
 ### Environment variables
 
-Environment variables can be included in a .env file.
+Environment variables can be included in a .env file, located
+at the root of the project.
 
-A .env.example is located at the root of this project. You can start using it
-by running 
-
-    cp .env.example .env
 
 #### Environment variables included
 
@@ -58,5 +56,3 @@ Custom username for Basic authentication. Only applies if you're using a backend
 **API_USERPASS**
 
 Custom password for Basic authentication. Only applies if you're using a backend API with a Basic Authorization scheme.
-
-

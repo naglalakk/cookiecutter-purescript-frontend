@@ -1,23 +1,30 @@
 {
   "name": "{{ cookiecutter.project_name }}",
-  "version": "{{ cookiecutter.version }}",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
+  "type": "module",
   "scripts": {
-    "clean": "rm -rf node_modules generated-docs output .spago static/build/*.js static/dist/*.js *.lock .cache",
-    "dev": "npm run build && spago bundle-app --main Server --to server.js && node server.js",
+    "build": "npm run style && npm run bundle",
+    "bundle": "spago bundle-app --to static/build/index.js && ./esbuild.js",
+    "clean": "rm -rf node_modules generated-docs output .spago static/build/*.js static/dist/* *.lock .cache",
+    "dev": "npm run build && npm run server",
     "docs": "purs docs 'src/*.purs' 'src/**/*.purs' --format html",
-    "build": "spago build && spago bundle-app --to static/build/index.js && ./esbuild.js",
+    "style": "./node_modules/sass/sass.js static/style/style.scss static/dist/style.css",
+    "server": "node server.js",
     "test": "spago test"
   },
   "dependencies": {
+    "decimal.js": "^10.4.2",
     "express": "^4.16.4",
+    "sass": "^1.54.9",
     "text-encoding": "^0.7.0",
     "url": "^0.11.0",
     "xhr2": "^0.2.1"
   },
   "devDependencies": {
     "dotenv": "^16.0.1",
-    "esbuild": "^0.14.48"
+    "esbuild": "^0.14.54",
+    "esbuild-envfile-plugin": "^1.0.5"
   }
 }
