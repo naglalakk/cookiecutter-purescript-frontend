@@ -5,54 +5,54 @@
 
 * [Purescript](https://github.com/purescript/purescript)
 * [Spago](https://github.com/spacchetti/spago)
-* npm or yarn
-* [Parcel](https://parceljs.org) 
+* [npm](https://www.npmjs.com/)
+* [esbuild](https://esbuild.github.io/) 
 
 ### Installation
 
 Once all the requirements are installed run
 
-    make install
+    spago install && npm i
 
 ### Commands
 
-This project includes a Makefile with a few common tasks:
+This project includes a few script commands located in package.json
 
-* build   - Builds code from src
-* bundle  - Bundle code from src to commonjs format
-* browser - Make a browser compatible js bundle
-* clean   - Clean up generated output (e.g. docs)
+* dev     - Run a dev server on port 8080
+* bundle  - Bundle js files with esbuild
+* style   - Process SCSS files
 * docs    - Generate docs from ./spago and ./src folders
-* install - Install all dependencies
-* server  - Starts development server on port 8080
 * test    - Runs tests for Purescript code
-
-The default package manager set for this project is yarn.
-You can change this by editing the PCK_MANAGER variable in the Makefile
-
-### Running the server
-
-Once you have installed everything you can run
-
-    make bundle && make server
+* clean   - Clean up generated output (e.g. docs, build etc)
 
 ### Environment variables
 
-Environment variables can be included in a .env file .e.g
+Environment variables can be included in a .env file, located
+at the root of the project.
 
-    echo "PORTNR=8081" > .env
 
-PORTNR
+#### Environment variables included
 
-The port number the server will be running on. The default port is 8080
+**PORTNR**
 
- 
-API_URL
+The port number the server will be running on.  Default: 8080
 
-The API URL for the backend service
+**ENVIRONMENT**
 
-{% if cookiecutter.user == "y" %}
-API_KEY
+Environment to run in. Default: Development
 
-Base64 version of a Basic Auth string ( base64(<username>:<password>) )
-{% endif %}
+**API_URL**
+
+Your custom API URL for backend requests
+
+**API_TOKEN**
+
+Custom authentication API_TOKEN. Only applies if you're using a backend API with a Bearer Authorization scheme.
+
+**API_USERNAME**
+
+Custom username for Basic authentication. Only applies if you're using a backend API with a Basic Authorization scheme.
+
+**API_USERPASS**
+
+Custom password for Basic authentication. Only applies if you're using a backend API with a Basic Authorization scheme.

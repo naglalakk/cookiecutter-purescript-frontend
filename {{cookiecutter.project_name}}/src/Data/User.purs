@@ -1,19 +1,16 @@
 module Data.User where
 
 import Prelude
-import Data.Argonaut            (decodeJson
-                                ,(~>),(:=)
-                                ,(.:), (.:?))
-import Data.Argonaut.Encode     (class EncodeJson)
-import Data.Argonaut.Decode     (class DecodeJson)
-import Data.Generic.Rep         (class Generic)
-import Data.Generic.Rep.Show    (genericShow)
-import Data.Maybe               (Maybe)
-import Data.Newtype             (class Newtype)
-import Formless                 as F
-import Timestamp                (Timestamp)
-
-import Data.Email               (Email)
+import Data.Argonaut (decodeJson, (~>), (:=), (.:), (.:?), toString)
+import Data.Argonaut.Encode (class EncodeJson)
+import Data.Argonaut.Decode (class DecodeJson)
+import Data.Either (Either(..), hush)
+import Data.Email (Email)
+import Data.Generic.Rep (class Generic)
+import Data.Maybe (Maybe(..))
+import Data.Newtype (class Newtype)
+import Data.Show.Generic (genericShow)
+import Timestamp (Timestamp)
 
 newtype UserId = UserId Int
 
@@ -27,9 +24,6 @@ derive newtype instance decodeJsonUserId :: DecodeJson UserId
 
 instance showUserId :: Show UserId where
   show = genericShow
-
-instance initialUserId :: F.Initial UserId where
-  initial = UserId 0
 
 newtype Username = Username String
 
@@ -48,11 +42,11 @@ instance showUsername :: Show Username where
 --   We do not keep the password
 --   within this data structure for safety
 --   reasons.
-newtype User = User 
-  { id       :: UserId
+newtype User = User
+  { id :: UserId
   , username :: Username
-  , email    :: Maybe Email
-  , isAdmin  :: Boolean
+  , email :: Maybe Email
+  , isAdmin :: Boolean
   , createdAt :: Timestamp
   , updatedAt :: Maybe Timestamp
   }
@@ -63,10 +57,9 @@ derive instance eqUser :: Eq User
 derive instance ordUser :: Ord User
 
 instance encodeJsonUser :: EncodeJson User where
-  encodeJson (User user)
-    =  "username"    := user.username
-    ~> "email"      := user.email
-    ~> "is_admin"   := user.isAdmin
+  encodeJson (User user) = "username" := user.username
+    ~> "email" := user.email
+    ~> "is_admin" := user.isAdmin
     ~> "created_at" := user.createdAt
     ~> "updated_at" := user.updatedAt
 
@@ -74,14 +67,14 @@ instance decodeJsonUser :: DecodeJson User where
   decodeJson json = do
     obj <- decodeJson json
     id <- obj .: "id"
-    let 
+    let
       userId = UserId id
     username <- obj .: "username"
-    email    <- obj .:? "email"
-    isAdmin  <- obj .: "is_admin"
+    email <- obj .:? "email"
+    isAdmin <- obj .: "is_admin"
     createdAt <- obj .: "created_at"
     updatedAt <- obj .:? "updated_at"
-    pure $ User 
+    pure $ User
       { id: userId
       , username: username
       , email: email

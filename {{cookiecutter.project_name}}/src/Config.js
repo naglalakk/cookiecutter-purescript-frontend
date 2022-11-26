@@ -1,3 +1,7 @@
-exports.environment = process.env.ENVIRONMENT || ""
-exports.apiURL      = process.env.API_URL     || "" {% if cookiecutter.user == "y" %}
-exports.apiKey      = process.env.API_KEY     || "" {% endif %}
+const environment = process.env.ENVIRONMENT || ""
+const apiURL = process.env.API_URL || ""
+const apiToken = process.env.API_TOKEN || ""
+const username = process.env.API_USERNAME || ""
+const userPass = process.env.API_USERPASS || ""
+
+export {environment, apiURL, apiToken, username, userPass}

@@ -1,8 +1,8 @@
 module Capability.LogMessages where
 
 import Prelude
-import Control.Monad.Trans.Class    (lift)
-import Halogen                      (HalogenM)
+import Control.Monad.Trans.Class (lift)
+import Halogen (HalogenM)
 
 class Monad m <= LogMessages m where
   logMessage :: String -> m Unit

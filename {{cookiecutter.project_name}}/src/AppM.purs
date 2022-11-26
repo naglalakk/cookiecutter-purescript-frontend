@@ -6,27 +6,29 @@ import Affjax (printError)
 import Api.Endpoint as API
 import Api.Request (RequestMethod(..), mkRequest)
 import Capability.LogMessages (class LogMessages, logMessage)
-import Capability.Navigate (class Navigate)
-import Control.Monad.Reader.Trans (class MonadAsk, ReaderT, ask, asks, runReaderT)
+import Capability.Navigate (class Navigate, navigate)
 import Data.Argonaut (decodeJson, printJsonDecodeError)
-import Data.Auth (APIAuth(..), apiAuth, base64encodeUserAuth)
+import Data.Auth (APIAuth(..), apiAuth, base64encodeUserAuth, removeToken)
 import Data.Either (Either(..))
-import Data.Environment (Environment(..), Env)
 import Data.Maybe (Maybe(..))
 import Data.Route as Route
 import Effect.Aff (Aff)
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Console as Console
+import Halogen as H
+import Halogen.Store.Monad (class MonadStore, StoreT, getStore, runStoreT, updateStore)
 import Resource.User (class ManageUser)
 import Routing.Duplex (print)
 import Simple.JSON (write)
-import Type.Equality (class TypeEquals, from)
+import Safe.Coerce (coerce)
+import Store (Action, Store)
+import Store as Store
 
-newtype AppM a = AppM (ReaderT Env Aff a)
+newtype AppM a = AppM (StoreT Store.Action Store.Store Aff a)
 
-runAppM :: Env -> AppM ~> Aff
-runAppM env (AppM m) = runReaderT m env
+runAppM :: forall q i o. Store.Store -> H.Component q i o AppM -> Aff (H.Component q i o Aff)
+runAppM store = runStoreT store Store.reduce <<< coerce
 
 derive newtype instance functorAppM :: Functor AppM
 derive newtype instance applyAppM :: Apply AppM
@@ -35,32 +37,30 @@ derive newtype instance bindAppM :: Bind AppM
 derive newtype instance monadAppM :: Monad AppM
 derive newtype instance monadEffectAppM :: MonadEffect AppM
 derive newtype instance monadAffAppM :: MonadAff AppM
-
-instance monadAskAppM :: TypeEquals e Env => MonadAsk e AppM where
-  ask = AppM $ asks from
+derive newtype instance monadStoreAppM :: MonadStore Action Store AppM
 
 instance logMessagesAppM :: LogMessages AppM where
-  logMessage log = do 
-    env <- ask
-    liftEffect case env.environment of
-      Production -> pure unit
+  logMessage log = do
+    { environment } <- getStore
+    liftEffect case environment of
+      Store.Production -> pure unit
       _ -> Console.log log
 
 instance navigateAppM :: Navigate AppM where
   navigate route = do
-    -- Get our PushStateInterface instance from env
-    env <- ask
-    let 
+    -- Get our PushStateInterface instance from our Store
+    { pushInterface } <- getStore
+    let
       href = "/" <> (print Route.routeCodec route)
     -- pushState new destination
-    liftEffect $ 
-      env.pushInterface.pushState 
-      (write {}) 
-      href
+    liftEffect $
+      pushInterface.pushState
+        (write {})
+        href
 
 instance manageUserAppM :: ManageUser AppM where
-  loginUser auth = do
-    res <- mkRequest 
+  login auth = do
+    res <- mkRequest
       { endpoint: API.UserLogin
       , method: Get
       , auth: Just $ Basic $ base64encodeUserAuth auth
@@ -76,3 +76,8 @@ instance manageUserAppM :: ManageUser AppM where
       Left err -> do
         logMessage $ printError err
         pure Nothing
+
+  logout = do
+    liftEffect $ removeToken
+    updateStore Store.LogoutUser
+    navigate Route.Home

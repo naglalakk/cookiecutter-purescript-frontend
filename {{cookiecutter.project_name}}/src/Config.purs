@@ -1,5 +1,7 @@
 module Config where
 
-foreign import environment  :: String
-foreign import apiURL       :: String {% if cookiecutter.user == "y" %}
-foreign import apiKey       :: String {% endif %}
+foreign import environment :: String
+foreign import apiURL :: String
+foreign import apiToken :: String
+foreign import username :: String
+foreign import userPass :: String
